@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Favorites - MindSpark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #0f172a;
+            --secondary: #6366f1;
+            --accent: #f59e0b;
+            --neutral: #64748b;
+            --success: #10b981;
+            --warning: #f97316;
+            --text-light: #f8fafc;
+            --text-dark: #0f172a;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+        }
+        
+        .display-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .favorite-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .favorite-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-art { border-left: 4px solid #ec4899; }
+        .category-startup { border-left: 4px solid #10b981; }
+        .category-design { border-left: 4px solid #f59e0b; }
+        
+        .hero-section {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(99, 102, 241, 0.1));
+            backdrop-filter: blur(10px);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stats-chart {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            border-color: transparent;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            to { box-shadow: 0 0 40px rgba(245, 158, 11, 0.6); }
+        }
+        
+        .empty-state {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .collection-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .collection-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .api-status {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .difficulty-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        .difficulty-beginner { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .difficulty-intermediate { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .difficulty-advanced { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        .rating-stars {
+            color: #fbbf24;
+        }
+        
+        .export-dropdown {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .favorite-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="display-font text-2xl font-bold text-white pulse-glow">MindSpark</div>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="text-white/80 hover:text-yellow-300 transition-colors">Generator</a>
+                        <a href="categories.html" class="text-white/80 hover:text-yellow-300 transition-colors">Categories</a>
+                        <a href="favorites.html" class="text-white hover:text-yellow-300 transition-colors font-medium">Favorites</a>
+                        <a href="challenge.html" class="text-white/80 hover:text-yellow-300 transition-colors">Challenge</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="api-status" class="api-status px-3 py-1 rounded-full text-xs font-medium">
+                        Sync Enabled
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 floating-element"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-section pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="display-font text-5xl md:text-6xl font-bold text-white mb-6">
+                    Professional Idea
+                    <span class="gradient-text">Collections</span>
+                </h1>
+                <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+                    Organize, analyze, and export your creative ideas with professional-grade tools and advanced collaboration features.
+                </p>
+                <div class="flex justify-center space-x-4 mb-8">
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Smart Organization</span>
+                    </div>
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Team Collaboration</span>
+                    </div>
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Advanced Export</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Advanced Management Tools -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Search and Organization -->
+                <div class="lg:col-span-2">
+                    <div class="glass-card p-6 mb-6">
+                        <div class="flex flex-col lg:flex-row gap-4 items-center">
+                            <div class="flex-1">
+                                <input 
+                                    type="text" 
+                                    id="collection-search" 
+                                    placeholder="Search your collections, tags, or descriptions..."
+                                    class="search-input w-full px-4 py-3 rounded-lg text-white placeholder-white/50"
+                                >
+                            </div>
+                            <div class="flex gap-2">
+                                <select id="sort-select" class="search-input px-4 py-3 rounded-lg text-white">
+                                    <option value="recent">Recently Added</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="category">By Category</option>
+                                    <option value="rating">By Rating</option>
+                                </select>
+                                <button onclick="createNewCollection()" class="action-btn px-6 py-3 rounded-lg text-white font-medium">
+                                    📁 New Collection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <button class="filter-btn active px-4 py-2 rounded-full text-white text-sm" data-filter="all">
+                            All Ideas
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-full text-white text-sm" data-filter="art">
+                            🎨 Art
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-full text-white text-sm" data-filter="startup">
+                            🚀 Business
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-full text-white text-sm" data-filter="design">
+                            ✏️ Design
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-full text-white text-sm" data-filter="rated">
+                            ⭐ Rated
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Collection Analytics -->
+                <div class="stats-chart p-6 rounded-2xl">
+                    <h3 class="display-font text-lg font-bold text-white mb-4">Collection Analytics</h3>
+                    <div id="collection-chart" style="height: 200px;"></div>
+                    <div class="mt-4 space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-white/80">Total Ideas:</span>
+                            <span class="text-yellow-400" id="total-ideas">0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-white/80">Avg Rating:</span>
+                            <span class="text-green-400" id="avg-rating">0.0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-white/80">Shared:</span>
+                            <span class="text-blue-400" id="shared-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Professional Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button onclick="exportProfessionalCollection()" class="action-btn px-6 py-3 rounded-lg text-white font-medium">
+                    📊 Export Report
+                </button>
+                <button onclick="shareCollection()" class="glass-card px-6 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    👥 Share Collection
+                </button>
+                <button onclick="generateInsights()" class="glass-card px-6 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    🔍 Generate Insights
+                </button>
+                <button onclick="bulkOperations()" class="glass-card px-6 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    ⚡ Bulk Operations
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Collections Grid -->
+    <section class="py-12 bg-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="display-font text-2xl font-bold text-white">Your Collections</h2>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white/60 text-sm">View:</span>
+                    <button onclick="toggleView('grid')" id="grid-view" class="filter-btn active px-3 py-1 rounded text-sm">
+                        ⊞ Grid
+                    </button>
+                    <button onclick="toggleView('list')" id="list-view" class="filter-btn px-3 py-1 rounded text-sm">
+                        ☰ List
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Collections Overview -->
+            <div id="collections-overview" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Collections will be populated here -->
+            </div>
+            
+            <!-- Favorites Grid -->
+            <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Favorites will be populated by JavaScript -->
+            </div>
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state p-12 rounded-2xl text-center hidden">
+                <div class="text-6xl mb-4">📚</div>
+                <h3 class="display-font text-2xl font-bold text-white mb-4">No collections yet</h3>
+                <p class="text-white/80 mb-6">
+                    Start building your professional idea library by saving ideas that inspire you!
+                </p>
+                <a href="index.html" class="action-btn px-8 py-3 rounded-lg text-white font-medium inline-block">
+                    Generate Ideas
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Professional Export Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="glass-card p-8 rounded-2xl max-w-md w-full">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="display-font text-xl font-bold text-white">Export Collection</h3>
+                    <button onclick="closeExportModal()" class="text-white/60 hover:text-white">✕</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-white/80 text-sm mb-2">Export Format</label>
+                        <select id="export-format" class="search-input w-full px-4 py-3 rounded-lg text-white">
+                            <option value="pdf">📄 PDF Report</option>
+                            <option value="json">📋 JSON Data</option>
+                            <option value="markdown">📝 Markdown</option>
+                            <option value="csv">📊 CSV Spreadsheet</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white/80 text-sm mb-2">Include Analytics</label>
+                        <input type="checkbox" id="include-analytics" class="mr-2">
+                        <span class="text-white/80 text-sm">Include usage statistics and insights</span>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white/80 text-sm mb-2">Template Style</label>
+                        <select id="template-style" class="search-input w-full px-4 py-3 rounded-lg text-white">
+                            <option value="professional">Professional</option>
+                            <option value="creative">Creative</option>
+                            <option value="minimal">Minimal</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4 mt-6">
+                    <button onclick="closeExportModal()" class="glass-card px-4 py-2 rounded-lg text-white font-medium flex-1">
+                        Cancel
+                    </button>
+                    <button onclick="confirmExport()" class="action-btn px-4 py-2 rounded-lg text-white font-medium flex-1">
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="display-font text-2xl font-bold text-white mb-4">MindSpark</div>
+            <p class="text-white/60 mb-4">Professional Creative Collections</p>
+            <p class="text-white/60">© 2024 MindSpark. Empowering creativity through intelligent organization.</p>
+        </div>
+    </footer>
+    
+    <script>
+        let favorites = [];
+        let collections = [];
+        let currentFilter = 'all';
+        let currentView = 'grid';
+        let searchQuery = '';
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFavorites();
+            loadCollections();
+            initializePage();
+            initializeCollectionChart();
+            startScrollReveal();
+        });
+        
+        function initializePage() {
+            renderFavorites();
+            renderCollections();
+            setupEventListeners();
+            updateCollectionAnalytics();
+        }
+        
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('collection-search').addEventListener('input', handleSearch);
+            document.getElementById('sort-select').addEventListener('change', handleSort);
+            
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setFilter(this.dataset.filter);
+                });
+            });
+        }
+        
+        function loadFavorites() {
+            favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            
+            // Add some professional sample data if empty
+            if (favorites.length === 0) {
+                favorites = [
+                    {
+                        id: Date.now() - 1000,
+                        title: "AI-Powered Creative Assistant",
+                        description: "Develop a SaaS platform that uses AI to help creative professionals overcome blocks and generate innovative ideas.",
+                        category: "startup",
+                        difficulty: "advanced",
+                        rating: 5,
+                        tags: ["AI", "SaaS", "Creative", "Productivity"],
+                        timestamp: new Date(Date.now() - 86400000).toISOString(),
+                        shared: true
+                    },
+                    {
+                        id: Date.now() - 2000,
+                        title: "Digital Consciousness Installation",
+                        description: "Create an immersive installation exploring the intersection of AI consciousness and human perception through interactive digital art.",
+                        category: "art",
+                        difficulty: "advanced",
+                        rating: 4,
+                        tags: ["AI", "Interactive", "Digital Art", "Consciousness"],
+                        timestamp: new Date(Date.now() - 172800000).toISOString(),
+                        shared: false
+                    }
+                ];
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+            }
+        }
+        
+        function loadCollections() {
+            collections = JSON.parse(localStorage.getItem('collections')) || [];
+            
+            // Add sample collections if empty
+            if (collections.length === 0) {
+                collections = [
+                    {
+                        id: 'collection-1',
+                        name: 'AI & Innovation Projects',
+                        description: 'Collection of AI-powered and innovative project ideas',
+                        ideas: favorites.filter(f => f.tags.includes('AI')).slice(0, 2),
+                        color: '#6366f1',
+                        created: new Date(Date.now() - 86400000).toISOString(),
+                        shared: true
+                    },
+                    {
+                        id: 'collection-2',
+                        name: 'Advanced Concepts',
+                        description: 'High-difficulty projects for experienced creators',
+                        ideas: favorites.filter(f => f.difficulty === 'advanced'),
+                        color: '#f59e0b',
+                        created: new Date(Date.now() - 172800000).toISOString(),
+                        shared: false
+                    }
+                ];
+                localStorage.setItem('collections', JSON.stringify(collections));
+            }
+        }
+        
+        function handleSearch(e) {
+            searchQuery = e.target.value.toLowerCase();
+            renderFavorites();
+        }
+        
+        function handleSort(e) {
+            const sortBy = e.target.value;
+            
+            favorites.sort((a, b) => {
+                switch (sortBy) {
+                    case 'recent':
+                        return new Date(b.timestamp) - new Date(a.timestamp);
+                    case 'oldest':
+                        return new Date(a.timestamp) - new Date(b.timestamp);
+                    case 'category':
+                        return a.category.localeCompare(b.category);
+                    case 'rating':
+                        return (b.rating || 0) - (a.rating || 0);
+                    default:
+                        return 0;
+                }
+            });
+            
+            renderFavorites();
+        }
+        
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            renderFavorites();
+        }
+        
+        function renderCollections() {
+            const container = document.getElementById('collections-overview');
+            container.innerHTML = '';
+            
+            collections.forEach((collection, index) => {
+                const card = document.createElement('div');
+                card.className = 'collection-card p-6 rounded-lg cursor-pointer';
+                card.style.borderLeft = `4px solid ${collection.color}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="display-font text-lg font-bold text-white mb-1">${collection.name}</h3>
+                            <p class="text-white/70 text-sm">${collection.description}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            ${collection.shared ? '<span class="text-blue-400 text-xs">👥 Shared</span>' : ''}
+                            <span class="text-white/60 text-xs">${collection.ideas.length} ideas</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex -space-x-2">
+                            ${collection.ideas.slice(0, 3).map((idea, i) => `
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-${idea.category === 'art' ? 'pink' : idea.category === 'startup' ? 'green' : 'yellow'}-400 to-${idea.category === 'art' ? 'pink' : idea.category === 'startup' ? 'green' : 'yellow'}-600 border-2 border-white/20 flex items-center justify-center text-xs font-bold text-white">
+                                    ${idea.category.charAt(0).toUpperCase()}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button onclick="viewCollection('${collection.id}')" class="text-yellow-400 hover:text-yellow-300 text-sm font-medium">
+                            View Collection →
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+                
+                // Animate in
+                anime({
+                    targets: card,
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 400,
+                    delay: index * 100,
+                    easing: 'easeOutQuad'
+                });
+            });
+        }
+        
+        function renderFavorites() {
+            const grid = document.getElementById('favorites-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            // Filter favorites
+            let filteredFavorites = favorites;
+            
+            if (currentFilter !== 'all') {
+                if (currentFilter === 'rated') {
+                    filteredFavorites = favorites.filter(f => f.rating && f.rating > 0);
+                } else {
+                    filteredFavorites = favorites.filter(f => f.category === currentFilter);
+                }
+            }
+            
+            if (searchQuery) {
+                filteredFavorites = filteredFavorites.filter(f => 
+                    (f.title && f.title.toLowerCase().includes(searchQuery)) ||
+                    (f.description && f.description.toLowerCase().includes(searchQuery)) ||
+                    (f.tags && f.tags.some(tag => tag.toLowerCase().includes(searchQuery)))
+                );
+            }
+            
+            if (filteredFavorites.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            grid.innerHTML = '';
+            
+            filteredFavorites.forEach((favorite, index) => {
+                const card = createProfessionalFavoriteCard(favorite, index);
+                grid.appendChild(card);
+            });
+        }
+        
+        function createProfessionalFavoriteCard(favorite, index) {
+            const card = document.createElement('div');
+            card.className = `favorite-card category-${favorite.category} p-6 rounded-lg`;
+            
+            const difficultyClass = favorite.difficulty ? `difficulty-${favorite.difficulty}` : 'difficulty-intermediate';
+            const ratingStars = '★'.repeat(favorite.rating || 0) + '☆'.repeat(5 - (favorite.rating || 0));
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="difficulty-badge ${difficultyClass}">${favorite.difficulty || 'intermediate'}</span>
+                        ${favorite.shared ? '<span class="text-blue-400 text-xs">👥</span>' : ''}
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="rating-stars text-sm">${ratingStars}</span>
+                        <button onclick="removeFavorite('${favorite.id}')" class="text-white/40 hover:text-red-400 transition-colors">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+                
+                <h3 class="display-font text-lg font-bold text-white mb-3">${favorite.title || 'Untitled Idea'}</h3>
+                <p class="text-white/80 leading-relaxed mb-4">${favorite.description || favorite.text || 'No description available'}</p>
+                
+                ${favorite.tags && favorite.tags.length > 0 ? `
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${favorite.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+                
+                <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-white/40 mono-font uppercase">${favorite.category}</span>
+                        <span class="text-xs text-white/40">${formatTimeAgo(favorite.timestamp)}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="rateFavorite('${favorite.id}')" class="text-yellow-400 hover:text-yellow-300 transition-colors">
+                            ⭐ Rate
+                        </button>
+                        <button onclick="shareFavorite('${favorite.id}')" class="text-blue-400 hover:text-blue-300 transition-colors">
+                            📤 Share
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Animate in
+            anime({
+                targets: card,
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 400,
+                delay: index * 100,
+                easing: 'easeOutQuad'
+            });
+            
+            return card;
+        }
+        
+        function viewCollection(collectionId) {
+            const collection = collections.find(c => c.id === collectionId);
+            if (collection) {
+                showNotification(`Opening collection: ${collection.name}`, 'info');
+                // In a real implementation, this would open a detailed collection view
+                setTimeout(() => {
+                    showNotification(`Collection "${collection.name}" opened with ${collection.ideas.length} ideas`, 'success');
+                }, 1000);
+            }
+        }
+        
+        function createNewCollection() {
+            const name = prompt('Enter collection name:');
+            if (name) {
+                const description = prompt('Enter collection description (optional):');
+                
+                const newCollection = {
+                    id: 'collection-' + Date.now(),
+                    name: name,
+                    description: description || 'New collection',
+                    ideas: [],
+                    color: '#' + Math.floor(Math.random()*16777215).toString(16),
+                    created: new Date().toISOString(),
+                    shared: false
+                };
+                
+                collections.push(newCollection);
+                localStorage.setItem('collections', JSON.stringify(collections));
+                
+                renderCollections();
+                showNotification(`Collection "${name}" created!`, 'success');
+            }
+        }
+        
+        function removeFavorite(id) {
+            if (confirm('Are you sure you want to remove this idea from favorites?')) {
+                favorites = favorites.filter(f => f.id !== id);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                
+                // Remove from collections as well
+                collections.forEach(collection => {
+                    collection.ideas = collection.ideas.filter(idea => idea.id !== id);
+                });
+                localStorage.setItem('collections', JSON.stringify(collections));
+                
+                renderFavorites();
+                updateCollectionAnalytics();
+                showNotification('Removed from favorites', 'success');
+            }
+        }
+        
+        function rateFavorite(id) {
+            const rating = prompt('Rate this idea (1-5 stars):');
+            const numRating = parseInt(rating);
+            
+            if (numRating >= 1 && numRating <= 5) {
+                const favorite = favorites.find(f => f.id === id);
+                if (favorite) {
+                    favorite.rating = numRating;
+                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                    renderFavorites();
+                    updateCollectionAnalytics();
+                    showNotification(`Rated ${numRating} stars!`, 'success');
+                }
+            } else {
+                showNotification('Please enter a rating between 1 and 5', 'error');
+            }
+        }
+        
+        function shareFavorite(id) {
+            const favorite = favorites.find(f => f.id === id);
+            if (favorite) {
+                favorite.shared = true;
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                
+                const shareText = `${favorite.title}\n\n${favorite.description}\n\nShared from MindSpark Professional`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Creative Idea from MindSpark',
+                        text: shareText,
+                        url: window.location.origin
+                    });
+                } else {
+                    navigator.clipboard.writeText(shareText + '\n\n' + window.location.origin).then(() => {
+                        showNotification('Copied to clipboard!', 'success');
+                    });
+                }
+                
+                renderFavorites();
+                updateCollectionAnalytics();
+            }
+        }
+        
+        function toggleView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.getElementById('grid-view').classList.toggle('active', view === 'grid');
+            document.getElementById('list-view').classList.toggle('active', view === 'list');
+            
+            // Update grid layout
+            const grid = document.getElementById('favorites-grid');
+            if (view === 'list') {
+                grid.className = 'grid grid-cols-1 gap-4';
+            } else {
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+            }
+            
+            renderFavorites();
+        }
+        
+        function exportProfessionalCollection() {
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+        
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+        
+        function confirmExport() {
+            const format = document.getElementById('export-format').value;
+            const includeAnalytics = document.getElementById('include-analytics').checked;
+            const templateStyle = document.getElementById('template-style').value;
+            
+            showNotification(`Exporting collection as ${format.toUpperCase()}...`, 'info');
+            
+            // Simulate export process
+            setTimeout(() => {
+                const exportData = {
+                    favorites: favorites,
+                    collections: collections,
+                    format: format,
+                    includeAnalytics: includeAnalytics,
+                    templateStyle: templateStyle,
+                    exportedAt: new Date().toISOString(),
+                    totalIdeas: favorites.length
+                };
+                
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `mindspark-collection-${new Date().toISOString().split('T')[0]}.${format}`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                closeExportModal();
+                showNotification('Collection exported successfully!', 'success');
+            }, 2000);
+        }
+        
+        function shareCollection() {
+            const shareText = `Check out my professional idea collection on MindSpark with ${favorites.length} curated ideas!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My MindSpark Professional Collection',
+                    text: shareText,
+                    url: window.location.origin
+                });
+            } else {
+                navigator.clipboard.writeText(shareText + '\n\n' + window.location.origin).then(() => {
+                    showNotification('Share link copied!', 'success');
+                });
+            }
+        }
+        
+        function generateInsights() {
+            showNotification('Analyzing your collection for insights...', 'info');
+            
+            // Simulate AI analysis
+            setTimeout(() => {
+                const insights = [
+                    `Your most popular category is ${getMostPopularCategory()}`,
+                    `You prefer ${getAverageDifficulty()} difficulty projects`,
+                    `Your average rating is ${getAverageRating().toFixed(1)} stars`,
+                    `You have ${favorites.filter(f => f.shared).length} shared ideas`
+                ];
+                
+                const insight = insights[Math.floor(Math.random() * insights.length)];
+                showNotification(`💡 Insight: ${insight}`, 'success');
+            }, 2500);
+        }
+        
+        function bulkOperations() {
+            showNotification('Bulk operations feature coming soon!', 'info');
+        }
+        
+        function getMostPopularCategory() {
+            const categories = favorites.map(f => f.category);
+            const counts = categories.reduce((acc, cat) => {
+                acc[cat] = (acc[cat] || 0) + 1;
+                return acc;
+            }, {});
+            
+            return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+        }
+        
+        function getAverageDifficulty() {
+            const difficulties = favorites.map(f => f.difficulty).filter(d => d);
+            const counts = difficulties.reduce((acc, diff) => {
+                acc[diff] = (acc[diff] || 0) + 1;
+                return acc;
+            }, {});
+            
+            return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b) || 'intermediate';
+        }
+        
+        function getAverageRating() {
+            const ratings = favorites.map(f => f.rating || 0).filter(r => r > 0);
+            return ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+        }
+        
+        function updateCollectionAnalytics() {
+            document.getElementById('total-ideas').textContent = favorites.length;
+            document.getElementById('avg-rating').textContent = getAverageRating().toFixed(1);
+            document.getElementById('shared-count').textContent = favorites.filter(f => f.shared).length;
+        }
+        
+        function initializeCollectionChart() {
+            const chartDom = document.getElementById('collection-chart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    textStyle: {
+                        color: '#ffffff'
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: '70%',
+                    data: [
+                        { value: favorites.filter(f => f.category === 'design').length, name: 'Design', itemStyle: { color: '#f59e0b' } },
+                        { value: favorites.filter(f => f.category === 'art').length, name: 'Art', itemStyle: { color: '#ec4899' } },
+                        { value: favorites.filter(f => f.category === 'startup').length, name: 'Business', itemStyle: { color: '#10b981' } }
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    label: {
+                        color: '#ffffff',
+                        fontSize: 11
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+        }
+        
+        function formatTimeAgo(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diffInMinutes = Math.floor((now - time) / (1000 * 60));
+            
+            if (diffInMinutes < 1) return 'Just now';
+            if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+            if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+            return new Date(timestamp).toLocaleDateString();
+        }
+        
+        function startScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'from-green-500 to-emerald-500' : 
+                           type === 'error' ? 'from-red-500 to-pink-500' : 
+                           type === 'info' ? 'from-blue-500 to-indigo-500' :
+                           'from-purple-500 to-pink-500';
+            
+            notification.className = `fixed top-20 right-4 bg-gradient-to-r ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            anime({
+                targets: notification,
+                opacity: [0, 1],
+                translateX: [100, 0],
+                duration: 300,
+                easing: 'easeOutQuad'
+            });
+            
+            setTimeout(() => {
+                anime({
+                    targets: notification,
+                    opacity: [1, 0],
+                    translateX: [0, 100],
+                    duration: 300,
+                    easing: 'easeInQuad',
+                    complete: () => notification.remove()
+                });
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

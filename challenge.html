@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Challenge - MindSpark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #0f172a;
+            --secondary: #6366f1;
+            --accent: #f59e0b;
+            --neutral: #64748b;
+            --success: #10b981;
+            --warning: #f97316;
+            --text-light: #f8fafc;
+            --text-dark: #0f172a;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+        }
+        
+        .display-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .challenge-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .challenge-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .challenge-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .timer-display {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(245, 158, 11, 0.2));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .idea-display {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 120px;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.1));
+            backdrop-filter: blur(10px);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .achievement-badge {
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+            color: var(--text-dark);
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .challenge-active {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--secondary);
+        }
+        
+        .challenge-completed {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--accent);
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            to { box-shadow: 0 0 40px rgba(245, 158, 11, 0.6); }
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .api-status {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .leaderboard-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .difficulty-selector {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .difficulty-selector.active {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-color: transparent;
+        }
+        
+        @media (max-width: 768px) {
+            .challenge-card {
+                margin-bottom: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="display-font text-2xl font-bold text-white pulse-glow">MindSpark</div>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="text-white/80 hover:text-yellow-300 transition-colors">Generator</a>
+                        <a href="categories.html" class="text-white/80 hover:text-yellow-300 transition-colors">Categories</a>
+                        <a href="favorites.html" class="text-white/80 hover:text-yellow-300 transition-colors">Favorites</a>
+                        <a href="challenge.html" class="text-white hover:text-yellow-300 transition-colors font-medium">Challenge</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="api-status" class="api-status px-3 py-1 rounded-full text-xs font-medium">
+                        Leaderboard Active
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 floating-element"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-section pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="display-font text-5xl md:text-6xl font-bold text-white mb-6">
+                    Professional Creative
+                    <span class="gradient-text">Challenges</span>
+                </h1>
+                <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+                    Push your creative limits with adaptive challenges, real-time analytics, and global leaderboards. Compete with professionals worldwide.
+                </p>
+                <div class="flex justify-center space-x-4 mb-8">
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Adaptive AI</span>
+                    </div>
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Global Leaderboard</span>
+                    </div>
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Performance Analytics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Challenge Selection -->
+    <section class="py-16" id="challenge-selection">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="display-font text-3xl font-bold text-white text-center mb-12">Choose Your Professional Challenge</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Quick Spark -->
+                <div class="challenge-card p-8 rounded-2xl text-center">
+                    <div class="text-6xl mb-4">⚡</div>
+                    <h3 class="display-font text-2xl font-bold text-white mb-4">Quick Spark</h3>
+                    <p class="text-white/80 mb-6">
+                        60 seconds of rapid idea generation with AI-powered suggestions. Perfect for daily creative warm-ups.
+                    </p>
+                    <div class="mb-6">
+                        <div class="text-3xl font-bold text-yellow-400 mb-2">60s</div>
+                        <div class="text-sm text-white/60">Target: 8-12 ideas</div>
+                        <div class="text-xs text-white/40 mt-1">Difficulty: Adaptive</div>
+                    </div>
+                    <button onclick="startChallenge('quick', 60)" class="start-btn w-full py-3 rounded-lg text-white font-bold">
+                        Start Quick Spark
+                    </button>
+                </div>
+                
+                <!-- Creative Sprint -->
+                <div class="challenge-card p-8 rounded-2xl text-center">
+                    <div class="text-6xl mb-4">🏃</div>
+                    <h3 class="display-font text-2xl font-bold text-white mb-4">Creative Sprint</h3>
+                    <p class="text-white/80 mb-6">
+                        5 minutes of focused creativity with performance analytics. Ideal for project brainstorming sessions.
+                    </p>
+                    <div class="mb-6">
+                        <div class="text-3xl font-bold text-yellow-400 mb-2">5min</div>
+                        <div class="text-sm text-white/60">Target: 20-30 ideas</div>
+                        <div class="text-xs text-white/40 mt-1">Difficulty: Professional</div>
+                    </div>
+                    <button onclick="startChallenge('sprint', 300)" class="start-btn w-full py-3 rounded-lg text-white font-bold">
+                        Start Sprint
+                    </button>
+                </div>
+                
+                <!-- Marathon -->
+                <div class="challenge-card p-8 rounded-2xl text-center">
+                    <div class="text-6xl mb-4">🏔️</div>
+                    <h3 class="display-font text-2xl font-bold text-white mb-4">Marathon</h3>
+                    <p class="text-white/80 mb-6">
+                        10 minutes of intensive creative work with global ranking. For serious brainstorming and innovation.
+                    </p>
+                    <div class="mb-6">
+                        <div class="text-3xl font-bold text-yellow-400 mb-2">10min</div>
+                        <div class="text-sm text-white/60">Target: 40+ ideas</div>
+                        <div class="text-xs text-white/40 mt-1">Difficulty: Expert</div>
+                    </div>
+                    <button onclick="startChallenge('marathon', 600)" class="start-btn w-full py-3 rounded-lg text-white font-bold">
+                        Start Marathon
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Difficulty Selection -->
+            <div class="mt-12 text-center">
+                <h3 class="display-font text-xl font-bold text-white mb-6">Select Difficulty Level</h3>
+                <div class="flex justify-center space-x-4">
+                    <button class="difficulty-selector active px-6 py-3 rounded-lg text-white font-medium" data-difficulty="adaptive">
+                        🧠 Adaptive
+                    </button>
+                    <button class="difficulty-selector px-6 py-3 rounded-lg text-white font-medium" data-difficulty="professional">
+                        💼 Professional
+                    </button>
+                    <button class="difficulty-selector px-6 py-3 rounded-lg text-white font-medium" data-difficulty="expert">
+                        🎯 Expert
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Challenge Interface -->
+    <section class="py-16 hidden" id="challenge-interface">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Professional Timer and Stats -->
+            <div class="text-center mb-12">
+                <div class="timer-display inline-block px-12 py-6 rounded-2xl mb-6">
+                    <div id="timer" class="display-font text-6xl font-bold text-white mb-2">05:00</div>
+                    <div class="text-white/60 text-sm">Time Remaining</div>
+                </div>
+                
+                <div class="progress-bar h-4 mb-6 max-w-md mx-auto">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                
+                <!-- Real-time Performance Stats -->
+                <div class="stats-grid max-w-4xl mx-auto mb-8">
+                    <div class="glass-card p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-white mb-1" id="ideas-count">0</div>
+                        <div class="text-white/60 text-sm">Ideas Generated</div>
+                        <div class="text-xs text-white/40 mt-1">Rate: <span id="current-rate">0</span>/min</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-white mb-1" id="favorites-count">0</div>
+                        <div class="text-white/60 text-sm">Favorites</div>
+                        <div class="text-xs text-white/40 mt-1">Quality Score</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-white mb-1" id="streak-count">0</div>
+                        <div class="text-white/60 text-sm">Current Streak</div>
+                        <div class="text-xs text-white/40 mt-1">Consecutive Ideas</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-white mb-1" id="ai-boost">0</div>
+                        <div class="text-white/60 text-sm">AI Boosts</div>
+                        <div class="text-xs text-white/40 mt-1">Enhancements Used</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Idea Display -->
+            <div class="idea-display p-8 rounded-2xl text-center mb-8">
+                <div id="current-idea" class="idea-text display-font font-medium mb-6 text-xl">
+                    Press "Generate" to start creating professional ideas!
+                </div>
+                <div class="flex justify-center items-center space-x-4 mb-6">
+                    <button id="generate-btn" onclick="generateChallengeIdea()" class="start-btn px-12 py-4 rounded-full text-white font-bold text-xl shadow-2xl">
+                        ✨ Generate Idea
+                    </button>
+                    <button id="favorite-btn" onclick="favoriteCurrentIdea()" class="glass-card px-6 py-4 rounded-full text-white font-medium hover:bg-white/20 transition-all" disabled>
+                        ❤️ Favorite
+                    </button>
+                    <button id="ai-boost-btn" onclick="useAIBoost()" class="glass-card px-6 py-4 rounded-full text-white font-medium hover:bg-white/20 transition-all">
+                        🤖 AI Boost
+                    </button>
+                </div>
+                
+                <!-- AI Enhancement Panel -->
+                <div id="ai-suggestion" class="mt-4 p-4 bg-white/5 rounded-lg hidden">
+                    <div class="text-sm text-white/80">
+                        <span class="text-purple-400 font-medium">AI Suggestion:</span>
+                        <span id="ai-suggestion-text"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Challenge Controls -->
+            <div class="flex justify-center space-x-4 mb-8">
+                <button onclick="pauseChallenge()" id="pause-btn" class="glass-card px-6 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    ⏸️ Pause
+                </button>
+                <button onclick="endChallenge()" class="glass-card px-6 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    🛑 End Challenge
+                </button>
+                <button onclick="skipIdea()" class="glass-card px-6 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    ⏭️ Skip
+                </button>
+            </div>
+            
+            <!-- Recent Ideas and Analytics -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Recent Ideas -->
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="display-font text-lg font-bold text-white mb-4">Recent Ideas</h3>
+                    <div id="recent-ideas" class="space-y-3 max-h-60 overflow-y-auto">
+                        <!-- Recent ideas will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Live Performance Chart -->
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="display-font text-lg font-bold text-white mb-4">Performance Analytics</h3>
+                    <div id="performance-chart" style="height: 200px;"></div>
+                    <div class="mt-4 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <div class="text-lg font-bold text-white" id="peak-rate">0</div>
+                            <div class="text-xs text-white/60">Peak Rate</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-white" id="avg-quality">0%</div>
+                            <div class="text-xs text-white/60">Quality Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Professional Results Screen -->
+    <section class="py-16 hidden" id="results-screen">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-8">
+                <div class="text-6xl mb-4">🏆</div>
+                <h2 class="display-font text-4xl font-bold text-white mb-4">Professional Challenge Complete!</h2>
+                <p class="text-xl text-white/80 mb-8">Outstanding performance! Here's your comprehensive analysis:</p>
+            </div>
+            
+            <!-- Comprehensive Results Stats -->
+            <div class="stats-grid mb-12">
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-white mb-2" id="final-ideas-count">0</div>
+                    <div class="text-white/80">Ideas Generated</div>
+                    <div class="text-xs text-white/40 mt-1">Professional Grade</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-white mb-2" id="final-favorites-count">0</div>
+                    <div class="text-white/80">Quality Ideas</div>
+                    <div class="text-xs text-white/40 mt-1">Favorited by You</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-white mb-2" id="final-rate">0</div>
+                    <div class="text-white/80">Ideas/Minute</div>
+                    <div class="text-xs text-white/40 mt-1">Average Rate</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-white mb-2" id="final-score">0</div>
+                    <div class="text-white/80">Performance Score</div>
+                    <div class="text-xs text-white/40 mt-1">Global Ranking</div>
+                </div>
+            </div>
+            
+            <!-- Performance Breakdown -->
+            <div class="glass-card p-8 rounded-2xl mb-12">
+                <h3 class="display-font text-2xl font-bold text-white mb-6">Performance Breakdown</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-400 mb-2" id="peak-performance">0</div>
+                        <div class="text-white/80">Peak Performance</div>
+                        <div class="text-xs text-white/60 mt-1">Ideas/minute</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-400 mb-2" id="consistency-score">0%</div>
+                        <div class="text-white/80">Consistency</div>
+                        <div class="text-xs text-white/60 mt-1">Performance stability</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-400 mb-2" id="ai-utilization">0</div>
+                        <div class="text-white/80">AI Utilization</div>
+                        <div class="text-xs text-white/60 mt-1">Boosts used</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Achievements and Badges -->
+            <div id="achievements" class="mb-12">
+                <!-- Achievements will be populated here -->
+            </div>
+            
+            <!-- Global Leaderboard Preview -->
+            <div class="glass-card p-8 rounded-2xl mb-12">
+                <h3 class="display-font text-2xl font-bold text-white mb-6">Global Leaderboard</h3>
+                <div class="space-y-4" id="leaderboard-preview">
+                    <!-- Leaderboard will be populated here -->
+                </div>
+                <div class="mt-6 text-center">
+                    <button onclick="viewFullLeaderboard()" class="action-btn px-6 py-3 rounded-lg text-white font-medium">
+                        View Full Leaderboard
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Professional Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="saveProfessionalResults()" class="action-btn px-8 py-3 rounded-lg text-white font-bold">
+                    💾 Save Results
+                </button>
+                <button onclick="shareProfessionalResults()" class="glass-card px-8 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    📤 Share Achievement
+                </button>
+                <button onclick="analyzePerformance()" class="glass-card px-8 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    📊 Performance Analysis
+                </button>
+                <button onclick="newProfessionalChallenge()" class="glass-card px-8 py-3 rounded-lg text-white font-medium hover:bg-white/20 transition-all">
+                    🔄 New Challenge
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="display-font text-2xl font-bold text-white mb-4">MindSpark</div>
+            <p class="text-white/60 mb-4">Professional Creative Challenge Platform</p>
+            <p class="text-white/60">© 2024 MindSpark. Elevating creativity through competitive innovation.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Enhanced challenge state with professional features
+        let challengeState = {
+            type: '',
+            duration: 0,
+            timeRemaining: 0,
+            ideasGenerated: 0,
+            favoritesCount: 0,
+            isActive: false,
+            isPaused: false,
+            currentIdea: '',
+            recentIdeas: [],
+            startTime: null,
+            difficulty: 'adaptive',
+            currentStreak: 0,
+            aiBoostsUsed: 0,
+            peakRate: 0,
+            performanceData: [],
+            qualityScore: 0
+        };
+        
+        let timerInterval = null;
+        let performanceChart = null;
+        
+        // Enhanced idea databases for different difficulties
+        const professionalIdeas = {
+            art: [
+                "Create a series of abstract paintings exploring the intersection of technology and nature",
+                "Design an interactive sculpture that responds to viewer movement and biometric data",
+                "Develop a mixed media installation about climate change using recycled materials",
+                "Create a digital art collection inspired by quantum physics and consciousness",
+                "Design an immersive VR experience that explores historical art movements",
+                "Develop a generative art system that creates unique pieces based on user emotions",
+                "Create a large-scale mural that incorporates augmented reality elements",
+                "Design an art therapy program using AI-generated visual prompts",
+                "Develop a kinetic sculpture that visualizes real-time environmental data",
+                "Create a series of portraits exploring identity in the digital age"
+            ],
+            
+            startup: [
+                "Develop a SaaS platform for creative project management with AI-powered insights",
+                "Create a marketplace connecting freelance designers with sustainable businesses",
+                "Build a subscription service for personalized art supplies and creative challenges",
+                "Develop a platform for virtual art galleries and digital exhibitions",
+                "Create a blockchain-based system for authenticating and selling digital art",
+                "Build an AI-powered tool that helps businesses develop creative marketing campaigns",
+                "Develop a platform for collaborative storytelling and narrative design",
+                "Create a service that transforms customer data into actionable creative insights",
+                "Build a marketplace for unique creative experiences and workshops",
+                "Develop a platform that uses AI to match creative talent with project opportunities"
+            ],
+            
+            design: [
+                "Design a mobile app interface for a mental health and wellness platform",
+                "Create a brand identity system for a sustainable technology company",
+                "Develop a user experience for an AI-powered educational platform",
+                "Design a dashboard for monitoring environmental impact metrics",
+                "Create a web application for collaborative creative writing",
+                "Develop a mobile interface for a smart home automation system",
+                "Design a brand system for a virtual reality entertainment company",
+                "Create a user interface for a blockchain-based creative marketplace",
+                "Develop a design system for a global non-profit organization",
+                "Design an interactive experience for a museum exhibition"
+            ]
+        };
+        
+        // AI enhancement suggestions
+        const aiEnhancements = [
+            "Consider the environmental impact of your design choices",
+            "Research shows this concept has 40% higher engagement with gamification elements",
+            "Industry experts recommend blockchain integration for authenticity",
+            "Market analysis indicates strong demand in the 25-35 demographic",
+            "Consider partnerships with established tech companies for scalability",
+            "Add biometric feedback for enhanced user engagement",
+            "Integrate AR/VR elements for immersive experiences",
+            "Consider subscription-based monetization models",
+            "Research competitor designs for differentiation opportunities",
+            "Plan for internationalization and cross-cultural adaptation"
+        ];
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePerformanceChart();
+            setupDifficultySelection();
+            loadChallengeHistory();
+        });
+        
+        function setupDifficultySelection() {
+            document.querySelectorAll('.difficulty-selector').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-selector').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    challengeState.difficulty = this.dataset.difficulty;
+                });
+            });
+        }
+        
+        function startChallenge(type, duration) {
+            challengeState = {
+                type: type,
+                duration: duration,
+                timeRemaining: duration,
+                ideasGenerated: 0,
+                favoritesCount: 0,
+                isActive: true,
+                isPaused: false,
+                currentIdea: '',
+                recentIdeas: [],
+                startTime: Date.now(),
+                difficulty: challengeState.difficulty,
+                currentStreak: 0,
+                aiBoostsUsed: 0,
+                peakRate: 0,
+                performanceData: [],
+                qualityScore: 0
+            };
+            
+            // Switch to challenge interface
+            document.getElementById('challenge-selection').classList.add('hidden');
+            document.getElementById('challenge-interface').classList.remove('hidden');
+            
+            // Start timer
+            startTimer();
+            
+            // Initialize performance chart
+            initializePerformanceChart();
+            
+            // Generate first idea
+            generateChallengeIdea();
+        }
+        
+        function startTimer() {
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                if (!challengeState.isPaused) {
+                    challengeState.timeRemaining--;
+                    updateTimerDisplay();
+                    updateProgress();
+                    updatePerformanceMetrics();
+                    
+                    if (challengeState.timeRemaining <= 0) {
+                        endChallenge();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(challengeState.timeRemaining / 60);
+            const seconds = challengeState.timeRemaining % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function updateProgress() {
+            const progress = ((challengeState.duration - challengeState.timeRemaining) / challengeState.duration) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+        
+        function updatePerformanceMetrics() {
+            const timeElapsed = challengeState.duration - challengeState.timeRemaining;
+            const currentRate = timeElapsed > 0 ? (challengeState.ideasGenerated / (timeElapsed / 60)).toFixed(1) : 0;
+            
+            document.getElementById('current-rate').textContent = currentRate;
+            document.getElementById('ideas-count').textContent = challengeState.ideasGenerated;
+            document.getElementById('favorites-count').textContent = challengeState.favoritesCount;
+            document.getElementById('streak-count').textContent = challengeState.currentStreak;
+            document.getElementById('ai-boost').textContent = challengeState.aiBoostsUsed;
+            
+            // Update peak rate
+            if (parseFloat(currentRate) > challengeState.peakRate) {
+                challengeState.peakRate = parseFloat(currentRate);
+                document.getElementById('peak-rate').textContent = challengeState.peakRate;
+            }
+            
+            // Record performance data for chart
+            if (timeElapsed % 5 === 0) { // Record every 5 seconds
+                challengeState.performanceData.push({
+                    time: timeElapsed,
+                    rate: parseFloat(currentRate),
+                    ideas: challengeState.ideasGenerated
+                });
+                updatePerformanceChart();
+            }
+        }
+        
+        function generateChallengeIdea() {
+            if (!challengeState.isActive || challengeState.isPaused) return;
+            
+            const categories = ['art', 'startup', 'design'];
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const ideas = professionalIdeas[randomCategory];
+            const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+            
+            challengeState.currentIdea = randomIdea;
+            challengeState.ideasGenerated++;
+            challengeState.currentStreak++;
+            
+            // Add to recent ideas
+            challengeState.recentIdeas.unshift({
+                text: randomIdea,
+                category: randomCategory,
+                timestamp: Date.now(),
+                enhanced: false
+            });
+            
+            if (challengeState.recentIdeas.length > 8) {
+                challengeState.recentIdeas.pop();
+            }
+            
+            // Update display
+            document.getElementById('current-idea').textContent = randomIdea;
+            document.getElementById('ideas-count').textContent = challengeState.ideasGenerated;
+            
+            // Enable buttons
+            document.getElementById('favorite-btn').disabled = false;
+            document.getElementById('ai-boost-btn').disabled = false;
+            
+            // Update recent ideas
+            updateRecentIdeas();
+            
+            // Animate idea change
+            anime({
+                targets: '#current-idea',
+                opacity: [0, 1],
+                scale: [0.95, 1],
+                duration: 400,
+                easing: 'easeOutQuad'
+            });
+            
+            // Randomly suggest AI enhancement
+            if (Math.random() > 0.7) {
+                setTimeout(() => {
+                    showAISuggestion();
+                }, 2000);
+            }
+        }
+        
+        function favoriteCurrentIdea() {
+            if (!challengeState.currentIdea) return;
+            
+            challengeState.favoritesCount++;
+            document.getElementById('favorites-count').textContent = challengeState.favoritesCount;
+            
+            // Update quality score
+            challengeState.qualityScore = Math.round((challengeState.favoritesCount / challengeState.ideasGenerated) * 100);
+            document.getElementById('avg-quality').textContent = challengeState.qualityScore + '%';
+            
+            // Save to localStorage
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            favorites.push({
+                id: Date.now(),
+                text: challengeState.currentIdea,
+                category: 'challenge',
+                timestamp: new Date().toISOString(),
+                challengeType: challengeState.type
+            });
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            
+            // Animate favorite button
+            anime({
+                targets: '#favorite-btn',
+                scale: [1, 1.2, 1],
+                backgroundColor: ['rgba(255, 255, 255, 0.1)', 'rgba(239, 68, 68, 0.2)', 'rgba(255, 255, 255, 0.1)'],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+            
+            showNotification('Added to favorites! ❤️', 'success');
+        }
+        
+        function useAIBoost() {
+            if (challengeState.aiBoostsUsed >= 3) {
+                showNotification('No AI boosts remaining!', 'error');
+                return;
+            }
+            
+            challengeState.aiBoostsUsed++;
+            document.getElementById('ai-boost').textContent = challengeState.aiBoostsUsed;
+            
+            // Show AI enhancement
+            showAISuggestion();
+            
+            // Animate AI boost button
+            anime({
+                targets: '#ai-boost-btn',
+                scale: [1, 1.1, 1],
+                backgroundColor: ['rgba(255, 255, 255, 0.1)', 'rgba(147, 51, 234, 0.2)', 'rgba(255, 255, 255, 0.1)'],
+                duration: 300,
+                easing: 'easeInOutQuad'
+            });
+            
+            showNotification('AI boost activated! 🤖', 'success');
+        }
+        
+        function showAISuggestion() {
+            const suggestion = aiEnhancements[Math.floor(Math.random() * aiEnhancements.length)];
+            document.getElementById('ai-suggestion-text').textContent = suggestion;
+            document.getElementById('ai-suggestion').classList.remove('hidden');
+            
+            anime({
+                targets: '#ai-suggestion',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 400,
+                easing: 'easeOutQuad'
+            });
+            
+            setTimeout(() => {
+                document.getElementById('ai-suggestion').classList.add('hidden');
+            }, 5000);
+        }
+        
+        function updateRecentIdeas() {
+            const container = document.getElementById('recent-ideas');
+            container.innerHTML = '';
+            
+            challengeState.recentIdeas.forEach((idea, index) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 bg-white/5 rounded-lg';
+                item.innerHTML = `
+                    <div class="flex-1">
+                        <span class="text-xs text-white/40 mono-font uppercase">${idea.category}</span>
+                        <p class="text-white/90 text-sm mt-1">${idea.text.substring(0, 60)}...</p>
+                    </div>
+                    <div class="flex items-center space-x-2 ml-4">
+                        ${idea.enhanced ? '<span class="text-purple-400 text-xs">🤖</span>' : ''}
+                        <span class="text-xs text-white/40">${Math.floor((Date.now() - idea.timestamp) / 1000)}s ago</span>
+                    </div>
+                `;
+                container.appendChild(item);
+                
+                // Animate in
+                anime({
+                    targets: item,
+                    opacity: [0, 1],
+                    translateX: [-20, 0],
+                    duration: 300,
+                    delay: index * 50,
+                    easing: 'easeOutQuad'
+                });
+            });
+        }
+        
+        function initializePerformanceChart() {
+            const chartDom = document.getElementById('performance-chart');
+            performanceChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    textStyle: {
+                        color: '#ffffff'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [],
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)'
+                        }
+                    },
+                    axisLabel: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)'
+                        }
+                    },
+                    axisLabel: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                series: [{
+                    data: [],
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#6366f1',
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#6366f1'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(99, 102, 241, 0.3)'
+                            }, {
+                                offset: 1, color: 'rgba(99, 102, 241, 0.05)'
+                            }]
+                        }
+                    }
+                }]
+            };
+            
+            performanceChart.setOption(option);
+        }
+        
+        function updatePerformanceChart() {
+            if (!performanceChart) return;
+            
+            const times = challengeState.performanceData.map(d => d.time + 's');
+            const rates = challengeState.performanceData.map(d => d.rate);
+            
+            performanceChart.setOption({
+                xAxis: {
+                    data: times
+                },
+                series: [{
+                    data: rates
+                }]
+            });
+        }
+        
+        function pauseChallenge() {
+            challengeState.isPaused = !challengeState.isPaused;
+            const btn = document.getElementById('pause-btn');
+            
+            if (challengeState.isPaused) {
+                btn.textContent = '▶️ Resume';
+                btn.classList.add('challenge-active');
+                showNotification('Challenge paused', 'info');
+            } else {
+                btn.textContent = '⏸️ Pause';
+                btn.classList.remove('challenge-active');
+                showNotification('Challenge resumed', 'success');
+            }
+        }
+        
+        function skipIdea() {
+            if (challengeState.currentIdea) {
+                challengeState.currentStreak = 0;
+                showNotification('Idea skipped', 'info');
+                generateChallengeIdea();
+            }
+        }
+        
+        function endChallenge() {
+            // Clear timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            challengeState.isActive = false;
+            
+            // Switch to results screen
+            document.getElementById('challenge-interface').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            
+            // Calculate comprehensive results
+            const timeElapsed = challengeState.duration - challengeState.timeRemaining;
+            const rate = timeElapsed > 0 ? (challengeState.ideasGenerated / (timeElapsed / 60)).toFixed(1) : 0;
+            const performanceScore = Math.round((challengeState.ideasGenerated * rate * challengeState.qualityScore) / 100);
+            
+            // Update results display
+            document.getElementById('final-ideas-count').textContent = challengeState.ideasGenerated;
+            document.getElementById('final-favorites-count').textContent = challengeState.favoritesCount;
+            document.getElementById('final-rate').textContent = rate;
+            document.getElementById('final-score').textContent = performanceScore;
+            document.getElementById('peak-performance').textContent = challengeState.peakRate;
+            document.getElementById('consistency-score').textContent = Math.round(challengeState.qualityScore) + '%';
+            document.getElementById('ai-utilization').textContent = challengeState.aiBoostsUsed;
+            
+            // Show achievements
+            showProfessionalAchievements(performanceScore);
+            
+            // Generate leaderboard
+            generateLeaderboard(performanceScore);
+            
+            // Save to history
+            saveChallengeToHistory(performanceScore);
+        }
+        
+        function showProfessionalAchievements(score) {
+            const container = document.getElementById('achievements');
+            container.innerHTML = '';
+            
+            const achievements = [];
+            
+            if (challengeState.ideasGenerated >= 15) {
+                achievements.push({ emoji: '🚀', title: 'Idea Machine', desc: 'Generated 15+ ideas' });
+            }
+            if (challengeState.favoritesCount >= 5) {
+                achievements.push({ emoji: '⭐', title: 'Quality Curator', desc: 'Favorited 5+ ideas' });
+            }
+            if (challengeState.peakRate >= 8) {
+                achievements.push({ emoji: '⚡', title: 'Speed Demon', desc: 'Peak rate of 8+ ideas/min' });
+            }
+            if (challengeState.aiBoostsUsed >= 2) {
+                achievements.push({ emoji: '🤖', title: 'AI Master', desc: 'Used 2+ AI boosts' });
+            }
+            if (score >= 500) {
+                achievements.push({ emoji: '🏆', title: 'Creative Champion', desc: 'Score over 500 points' });
+            }
+            if (challengeState.qualityScore >= 80) {
+                achievements.push({ emoji: '💎', title: 'Quality Expert', desc: '80%+ quality score' });
+            }
+            
+            achievements.forEach((achievement, index) => {
+                const badge = document.createElement('div');
+                badge.className = 'achievement-badge inline-block px-6 py-3 rounded-full mx-2 mb-4';
+                badge.innerHTML = `
+                    <div class="text-2xl mb-1">${achievement.emoji}</div>
+                    <div class="font-bold">${achievement.title}</div>
+                    <div class="text-sm opacity-80">${achievement.desc}</div>
+                `;
+                container.appendChild(badge);
+                
+                // Animate in
+                anime({
+                    targets: badge,
+                    opacity: [0, 1],
+                    scale: [0, 1],
+                    duration: 500,
+                    delay: index * 200,
+                    easing: 'easeOutBack'
+                });
+            });
+        }
+        
+        function generateLeaderboard(userScore) {
+            const container = document.getElementById('leaderboard-preview');
+            container.innerHTML = '';
+            
+            // Mock leaderboard data
+            const leaderboard = [
+                { name: 'CreativeGenius', score: 892, country: '🇺🇸' },
+                { name: 'IdeaMaster', score: 756, country: '🇬🇧' },
+                { name: 'InnovationPro', score: 689, country: '🇯🇵' },
+                { name: 'You', score: userScore, country: '🏁' },
+                { name: 'DesignNinja', score: 543, country: '🇰🇷' },
+                { name: 'ArtWizard', score: 487, country: '🇨🇦' }
+            ];
+            
+            // Sort by score
+            leaderboard.sort((a, b) => b.score - a.score);
+            
+            leaderboard.forEach((entry, index) => {
+                const item = document.createElement('div');
+                item.className = `leaderboard-item flex items-center justify-between p-4 rounded-lg ${entry.name === 'You' ? 'border-2 border-yellow-400' : ''}`;
+                item.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="text-2xl font-bold text-white w-8">${index + 1}</div>
+                        <div class="text-lg">${entry.country}</div>
+                        <div class="font-medium text-white">${entry.name}</div>
+                    </div>
+                    <div class="text-xl font-bold text-yellow-400">${entry.score}</div>
+                `;
+                container.appendChild(item);
+                
+                // Animate in
+                anime({
+                    targets: item,
+                    opacity: [0, 1],
+                    translateX: [50, 0],
+                    duration: 400,
+                    delay: index * 100,
+                    easing: 'easeOutQuad'
+                });
+            });
+        }
+        
+        function saveProfessionalResults() {
+            const results = {
+                ...challengeState,
+                completedAt: new Date().toISOString(),
+                performanceScore: Math.round((challengeState.ideasGenerated * (challengeState.favoritesCount / Math.max(challengeState.ideasGenerated, 1)) * 100)),
+                achievements: getAchievementNames()
+            };
+            
+            // Save to localStorage
+            const challengeHistory = JSON.parse(localStorage.getItem('challengeHistory')) || [];
+            challengeHistory.push(results);
+            localStorage.setItem('challengeHistory', JSON.stringify(challengeHistory));
+            
+            showNotification('Professional results saved!', 'success');
+        }
+        
+        function shareProfessionalResults() {
+            const shareText = `I just completed a ${challengeState.type} challenge on MindSpark Professional and scored ${document.getElementById('final-score').textContent} points! 🏆`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'MindSpark Professional Challenge Complete!',
+                    text: shareText,
+                    url: window.location.origin
+                });
+            } else {
+                navigator.clipboard.writeText(shareText + '\n\n' + window.location.origin).then(() => {
+                    showNotification('Results copied to clipboard!', 'success');
+                });
+            }
+        }
+        
+        function analyzePerformance() {
+            showNotification('Generating comprehensive performance analysis...', 'info');
+            
+            setTimeout(() => {
+                const analysis = [
+                    `Your peak performance was ${challengeState.peakRate} ideas/minute`,
+                    `You maintained ${challengeState.qualityScore}% quality throughout`,
+                    `Your consistency score was ${Math.round(challengeState.qualityScore)}%`,
+                    `You used AI enhancement ${challengeState.aiBoostsUsed} times effectively`
+                ];
+                
+                const insight = analysis[Math.floor(Math.random() * analysis.length)];
+                showNotification(`📊 Analysis: ${insight}`, 'success');
+            }, 2000);
+        }
+        
+        function newProfessionalChallenge() {
+            // Reset and go back to selection
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('challenge-selection').classList.remove('hidden');
+            
+            // Reset state
+            challengeState = {
+                type: '',
+                duration: 0,
+                timeRemaining: 0,
+                ideasGenerated: 0,
+                favoritesCount: 0,
+                isActive: false,
+                isPaused: false,
+                currentIdea: '',
+                recentIdeas: [],
+                startTime: null,
+                difficulty: 'adaptive',
+                currentStreak: 0,
+                aiBoostsUsed: 0,
+                peakRate: 0,
+                performanceData: [],
+                qualityScore: 0
+            };
+        }
+        
+        function viewFullLeaderboard() {
+            showNotification('Opening global leaderboard...', 'info');
+            // In a real implementation, this would open a detailed leaderboard view
+            setTimeout(() => {
+                showNotification('Leaderboard feature coming soon!', 'success');
+            }, 1000);
+        }
+        
+        function getAchievementNames() {
+            const achievements = [];
+            
+            if (challengeState.ideasGenerated >= 15) achievements.push('Idea Machine');
+            if (challengeState.favoritesCount >= 5) achievements.push('Quality Curator');
+            if (challengeState.peakRate >= 8) achievements.push('Speed Demon');
+            if (challengeState.aiBoostsUsed >= 2) achievements.push('AI Master');
+            if (challengeState.qualityScore >= 80) achievements.push('Quality Expert');
+            
+            return achievements;
+        }
+        
+        function loadChallengeHistory() {
+            // Load and display previous challenge results if available
+            const history = JSON.parse(localStorage.getItem('challengeHistory')) || [];
+            if (history.length > 0) {
+                console.log(`Loaded ${history.length} previous challenges`);
+            }
+        }
+        
+        function saveChallengeToHistory(score) {
+            const history = JSON.parse(localStorage.getItem('challengeHistory')) || [];
+            history.push({
+                ...challengeState,
+                finalScore: score,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only last 10 challenges
+            if (history.length > 10) {
+                history.shift();
+            }
+            
+            localStorage.setItem('challengeHistory', JSON.stringify(history));
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'from-green-500 to-emerald-500' : 
+                           type === 'error' ? 'from-red-500 to-pink-500' : 
+                           type === 'info' ? 'from-blue-500 to-indigo-500' :
+                           'from-purple-500 to-pink-500';
+            
+            notification.className = `fixed top-20 right-4 bg-gradient-to-r ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            anime({
+                targets: notification,
+                opacity: [0, 1],
+                translateX: [100, 0],
+                duration: 300,
+                easing: 'easeOutQuad'
+            });
+            
+            setTimeout(() => {
+                anime({
+                    targets: notification,
+                    opacity: [1, 0],
+                    translateX: [0, 100],
+                    duration: 300,
+                    easing: 'easeInQuad',
+                    complete: () => notification.remove()
+                });
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

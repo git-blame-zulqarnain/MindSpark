@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindSpark - Professional Creative Idea Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #0f172a;
+            --secondary: #6366f1;
+            --accent: #f59e0b;
+            --neutral: #64748b;
+            --success: #10b981;
+            --warning: #f97316;
+            --text-light: #f8fafc;
+            --text-dark: #0f172a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text-light);
+        }
+        
+        .display-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .hero-bg {
+            background: url('resources/hero-brainstorm.jpg') center/cover no-repeat;
+            position: relative;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-4px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .category-btn.active {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .generate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+        
+        .idea-display {
+            min-height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .idea-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-light);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(245, 158, 11, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .history-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .history-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .typing-cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            to { box-shadow: 0 0 40px rgba(245, 158, 11, 0.6); }
+        }
+        
+        .api-status {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .api-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .api-status.loading {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+        
+        @media (max-width: 768px) {
+            .idea-text {
+                font-size: 1.2rem;
+            }
+            
+            .idea-display {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+        }
+        
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particle-bg" class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="display-font text-2xl font-bold text-white pulse-glow">MindSpark</div>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="text-white hover:text-yellow-300 transition-colors font-medium">Generator</a>
+                        <a href="categories.html" class="text-white/80 hover:text-yellow-300 transition-colors">Categories</a>
+                        <a href="favorites.html" class="text-white/80 hover:text-yellow-300 transition-colors">Favorites</a>
+                        <a href="challenge.html" class="text-white/80 hover:text-yellow-300 transition-colors">Challenge</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="api-status" class="api-status px-3 py-1 rounded-full text-xs font-medium">
+                        API Connected
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 floating-element"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-bg pt-24 pb-16">
+        <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="display-font text-5xl md:text-7xl font-bold text-white mb-6">
+                    Spark Your
+                    <span class="gradient-text">Creativity</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+                    Overcome creative blocks with AI-powered idea generation. Get instant inspiration for art, startups, and design projects with professional-grade tools.
+                </p>
+                <div class="flex justify-center space-x-4 mb-8">
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">500+ Ideas</span>
+                    </div>
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">AI Enhanced</span>
+                    </div>
+                    <div class="glass-card px-4 py-2">
+                        <span class="text-sm text-white/80">Professional Tools</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Generator Interface -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Advanced Search and Filters -->
+            <div class="glass-card p-6 mb-8">
+                <div class="flex flex-col lg:flex-row gap-4 items-center">
+                    <div class="flex-1">
+                        <input 
+                            type="text" 
+                            id="search-input" 
+                            placeholder="Search ideas or describe what you're looking for..."
+                            class="search-input w-full px-4 py-3 rounded-lg text-white placeholder-white/50"
+                        >
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="sort-select" class="search-input px-4 py-3 rounded-lg text-white">
+                            <option value="random">Random</option>
+                            <option value="recent">Recent</option>
+                            <option value="popular">Popular</option>
+                        </select>
+                        <button id="ai-enhance-btn" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all">
+                            ✨ AI Enhance
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Selector -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="category-btn active px-8 py-4 rounded-full font-semibold text-lg text-white" 
+                        data-category="art" data-color="#6366f1">
+                    🎨 Art & Creative
+                </button>
+                <button class="category-btn px-8 py-4 rounded-full font-semibold text-lg text-white" 
+                        data-category="startup" data-color="#10b981">
+                    🚀 Business & Tech
+                </button>
+                <button class="category-btn px-8 py-4 rounded-full font-semibold text-lg text-white" 
+                        data-category="design" data-color="#f59e0b">
+                    ✏️ Design & UX
+                </button>
+            </div>
+            
+            <!-- Main Idea Display -->
+            <div class="idea-display text-center mb-8">
+                <div id="idea-text" class="idea-text display-font font-medium mb-6">
+                    Click the spark button to generate your first creative idea!
+                </div>
+                <div class="flex justify-center items-center space-x-4">
+                    <button id="generate-btn" class="generate-btn ripple-effect px-12 py-4 rounded-full text-white font-bold text-xl shadow-2xl">
+                        <span id="btn-text">✨ Spark New Idea</span>
+                    </button>
+                    <button id="favorite-btn" class="glass-card px-6 py-4 rounded-full text-white font-medium hover:bg-white/20 transition-all" disabled>
+                        ❤️ Favorite
+                    </button>
+                    <button id="share-btn" class="glass-card px-6 py-4 rounded-full text-white font-medium hover:bg-white/20 transition-all">
+                        📤 Share
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Advanced Stats Dashboard -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="stats-card p-6 rounded-2xl text-center">
+                    <div class="text-3xl font-bold text-white mb-2" id="ideas-generated">0</div>
+                    <div class="text-white/80 text-sm">Ideas Generated</div>
+                    <div class="mt-2 h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div id="ideas-progress" class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stats-card p-6 rounded-2xl text-center">
+                    <div class="text-3xl font-bold text-white mb-2" id="favorites-count">0</div>
+                    <div class="text-white/80 text-sm">Favorites</div>
+                    <div class="mt-2 h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div id="favorites-progress" class="h-full bg-gradient-to-r from-pink-500 to-red-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stats-card p-6 rounded-2xl text-center">
+                    <div class="text-3xl font-bold text-white mb-2" id="streak-count">0</div>
+                    <div class="text-white/80 text-sm">Day Streak</div>
+                    <div class="mt-2 h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div id="streak-progress" class="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stats-card p-6 rounded-2xl text-center">
+                    <div class="text-3xl font-bold text-white mb-2" id="ai-suggestions">0</div>
+                    <div class="text-white/80 text-sm">AI Suggestions</div>
+                    <div class="mt-2 h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div id="ai-progress" class="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Enhancement Panel -->
+            <div id="ai-panel" class="glass-card p-6 mb-8 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="display-font text-xl font-bold text-white">AI Enhancement</h3>
+                    <button onclick="closeAIPanel()" class="text-white/60 hover:text-white">✕</button>
+                </div>
+                <div id="ai-suggestions-content" class="space-y-3">
+                    <!-- AI suggestions will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Real-time Activity Feed -->
+            <div class="glass-card p-6 mb-8">
+                <h3 class="display-font text-xl font-bold text-white mb-4">Recent Activity</h3>
+                <div id="activity-feed" class="space-y-3 max-h-40 overflow-y-auto">
+                    <!-- Activity items will be populated here -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Professional Features Showcase -->
+    <section class="py-16 bg-white/5 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="display-font text-4xl font-bold text-white text-center mb-12">
+                Professional <span class="gradient-text">Features</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">🤖</div>
+                    <h3 class="display-font text-xl font-bold text-white mb-4">AI-Powered Generation</h3>
+                    <p class="text-white/80 mb-4">
+                        Advanced AI algorithms analyze your preferences and generate personalized, context-aware ideas that match your creative style.
+                    </p>
+                    <div class="flex items-center text-sm text-white/60">
+                        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full mr-2">Live</span>
+                        Real-time enhancement
+                    </div>
+                </div>
+                
+                <div class="feature-card p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="display-font text-xl font-bold text-white mb-4">Advanced Analytics</h3>
+                    <p class="text-white/80 mb-4">
+                        Track your creative progress with detailed statistics, trend analysis, and personalized insights to optimize your workflow.
+                    </p>
+                    <div class="flex items-center text-sm text-white/60">
+                        <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full mr-2">Pro</span>
+                        Professional metrics
+                    </div>
+                </div>
+                
+                <div class="feature-card p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h3 class="display-font text-xl font-bold text-white mb-4">Collaboration Tools</h3>
+                    <p class="text-white/80 mb-4">
+                        Share ideas with your team, create collaborative collections, and export professional reports for stakeholders.
+                    </p>
+                    <div class="flex items-center text-sm text-white/60">
+                        <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded-full mr-2">Team</span>
+                        Multi-user support
+                    </div>
+                </div>
+                
+                <div class="feature-card p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="display-font text-xl font-bold text-white mb-4">Smart Challenges</h3>
+                    <p class="text-white/80 mb-4">
+                        Adaptive challenge modes that adjust difficulty based on your performance, with real-time feedback and achievements.
+                    </p>
+                    <div class="flex items-center text-sm text-white/60">
+                        <span class="bg-orange-500/20 text-orange-400 px-2 py-1 rounded-full mr-2">Smart</span>
+                        AI-adaptive
+                    </div>
+                </div>
+                
+                <div class="feature-card p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">🎨</div>
+                    <h3 class="display-font text-xl font-bold text-white mb-4">Visual Inspiration</h3>
+                    <p class="text-white/80 mb-4">
+                        Get visual prompts and color palette suggestions integrated with your ideas for enhanced creative inspiration.
+                    </p>
+                    <div class="flex items-center text-sm text-white/60">
+                        <span class="bg-pink-500/20 text-pink-400 px-2 py-1 rounded-full mr-2">Visual</span>
+                        Image integration
+                    </div>
+                </div>
+                
+                <div class="feature-card p-8 rounded-2xl">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h3 class="display-font text-xl font-bold text-white mb-4">Cross-Platform</h3>
+                    <p class="text-white/80 mb-4">
+                        Access your ideas anywhere with cloud synchronization, offline mode, and responsive design for all devices.
+                    </p>
+                    <div class="flex items-center text-sm text-white/60">
+                        <span class="bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded-full mr-2">Cloud</span>
+                        Sync enabled
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Interactive Demo Section -->
+    <section class="py-16 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-card p-8 rounded-2xl">
+                <h2 class="display-font text-3xl font-bold text-white text-center mb-8">
+                    Interactive <span class="gradient-text">Demo</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="display-font text-xl font-bold text-white mb-4">Try AI Enhancement</h3>
+                        <p class="text-white/80 mb-6">
+                            Experience our advanced AI that analyzes your input and generates personalized creative suggestions. 
+                            Type anything below and watch as our AI provides contextual enhancements.
+                        </p>
+                        <div class="space-y-4">
+                            <input 
+                                type="text" 
+                                id="ai-demo-input" 
+                                placeholder="Describe your creative project..."
+                                class="search-input w-full px-4 py-3 rounded-lg text-white placeholder-white/50"
+                            >
+                            <button onclick="demoAIEnhancement()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all w-full">
+                                ✨ Get AI Suggestions
+                            </button>
+                        </div>
+                        <div id="ai-demo-output" class="mt-4 p-4 bg-white/5 rounded-lg hidden">
+                            <!-- AI demo output will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="display-font text-xl font-bold text-white mb-4">Live Statistics</h3>
+                        <div id="demo-chart" style="height: 300px;"></div>
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white" id="demo-ideas">0</div>
+                                <div class="text-sm text-white/60">Ideas Generated</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white" id="demo-users">1,247</div>
+                                <div class="text-sm text-white/60">Active Users</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="display-font text-2xl font-bold text-white mb-4">MindSpark</div>
+            <p class="text-white/60 mb-4">Professional Creative Idea Generation Platform</p>
+            <p class="text-white/60">© 2024 MindSpark. Empowering creativity through intelligent design.</p>
+        </div>
+    </footer>
+    
+    <script src="main.js"></script>
+    <script>
+        // Initialize advanced features
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdvancedFeatures();
+            initializeDemoChart();
+            startScrollReveal();
+        });
+        
+        function initializeAdvancedFeatures() {
+            // Setup search functionality
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', handleAdvancedSearch);
+            
+            // Setup AI enhancement
+            const aiEnhanceBtn = document.getElementById('ai-enhance-btn');
+            aiEnhanceBtn.addEventListener('click', showAIPanel);
+            
+            // Setup share functionality
+            const shareBtn = document.getElementById('share-btn');
+            shareBtn.addEventListener('click', shareCurrentIdea);
+            
+            // Update API status periodically
+            setInterval(updateAPIStatus, 30000);
+            
+            // Initialize activity feed
+            updateActivityFeed();
+        }
+        
+        function handleAdvancedSearch(e) {
+            const query = e.target.value.toLowerCase();
+            
+            if (query.length > 2) {
+                // Simulate API call for search suggestions
+                showNotification('Searching for: ' + query);
+                
+                // In a real implementation, this would call an API
+                setTimeout(() => {
+                    showNotification('Found ' + Math.floor(Math.random() * 50) + ' relevant ideas');
+                }, 1000);
+            }
+        }
+        
+        function showAIPanel() {
+            const panel = document.getElementById('ai-panel');
+            panel.classList.remove('hidden');
+            
+            // Simulate AI suggestions
+            const suggestions = [
+                "Consider exploring digital art techniques for this concept",
+                "This idea could be enhanced with VR/AR elements",
+                "Try combining this with sustainable design principles",
+                "Consider the user experience flow for this concept",
+                "This could be monetized through a subscription model"
+            ];
+            
+            const content = document.getElementById('ai-suggestions-content');
+            content.innerHTML = '';
+            
+            suggestions.forEach((suggestion, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 bg-white/5 rounded-lg text-white/90';
+                    item.textContent = suggestion;
+                    content.appendChild(item);
+                    
+                    anime({
+                        targets: item,
+                        opacity: [0, 1],
+                        translateX: [-20, 0],
+                        duration: 300,
+                        easing: 'easeOutQuad'
+                    });
+                }, index * 200);
+            });
+            
+            // Update AI suggestions count
+            const currentCount = parseInt(document.getElementById('ai-suggestions').textContent);
+            document.getElementById('ai-suggestions').textContent = currentCount + suggestions.length;
+        }
+        
+        function closeAIPanel() {
+            document.getElementById('ai-panel').classList.add('hidden');
+        }
+        
+        function shareCurrentIdea() {
+            const ideaText = document.getElementById('idea-text').textContent;
+            
+            if (ideaText && ideaText !== 'Click the spark button to generate your first creative idea!') {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Creative Idea from MindSpark',
+                        text: ideaText,
+                        url: window.location.origin
+                    });
+                } else {
+                    navigator.clipboard.writeText(ideaText).then(() => {
+                        showNotification('Idea copied to clipboard!');
+                    });
+                }
+            } else {
+                showNotification('Generate an idea first!');
+            }
+        }
+        
+        function updateAPIStatus() {
+            const status = document.getElementById('api-status');
+            const statuses = ['API Connected', 'AI Active', 'Sync Enabled'];
+            const colors = ['api-status', 'api-status', 'api-status'];
+            
+            const randomIndex = Math.floor(Math.random() * statuses.length);
+            status.textContent = statuses[randomIndex];
+            status.className = `api-status px-3 py-1 rounded-full text-xs font-medium ${colors[randomIndex]}`;
+        }
+        
+        function updateActivityFeed() {
+            const activities = [
+                'New AI suggestion generated',
+                'Challenge completed by user',
+                'Idea shared to social media',
+                'New user joined the platform',
+                'Achievement unlocked: Creative Genius',
+                'Collection exported to PDF',
+                'Team collaboration started',
+                'Advanced search used'
+            ];
+            
+            const feed = document.getElementById('activity-feed');
+            
+            setInterval(() => {
+                const activity = activities[Math.floor(Math.random() * activities.length)];
+                const item = document.createElement('div');
+                item.className = 'flex items-center space-x-3 text-white/80 text-sm';
+                item.innerHTML = `
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>${activity}</span>
+                    <span class="text-white/40 text-xs">${new Date().toLocaleTimeString()}</span>
+                `;
+                
+                feed.insertBefore(item, feed.firstChild);
+                
+                if (feed.children.length > 5) {
+                    feed.removeChild(feed.lastChild);
+                }
+                
+                anime({
+                    targets: item,
+                    opacity: [0, 1],
+                    translateX: [-20, 0],
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            }, 5000);
+        }
+        
+        function demoAIEnhancement() {
+            const input = document.getElementById('ai-demo-input').value;
+            const output = document.getElementById('ai-demo-output');
+            
+            if (input.trim() === '') {
+                showNotification('Please enter a project description first!');
+                return;
+            }
+            
+            output.classList.remove('hidden');
+            output.innerHTML = '<div class="text-white/60">Analyzing your input...</div>';
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                const suggestions = [
+                    "🎨 Visual Enhancement: Consider using a color palette inspired by nature for this project",
+                    "🎯 Target Audience: This concept would appeal to creative professionals aged 25-45",
+                    "💡 Innovation Opportunity: Add AR/VR elements to create an immersive experience",
+                    "📱 Platform Strategy: Develop for both web and mobile with responsive design",
+                    "🚀 Monetization: Consider a freemium model with premium features"
+                ];
+                
+                output.innerHTML = '';
+                suggestions.forEach((suggestion, index) => {
+                    setTimeout(() => {
+                        const item = document.createElement('div');
+                        item.className = 'p-3 bg-white/5 rounded-lg text-white/90 mb-2';
+                        item.textContent = suggestion;
+                        output.appendChild(item);
+                        
+                        anime({
+                            targets: item,
+                            opacity: [0, 1],
+                            translateY: [20, 0],
+                            duration: 400,
+                            easing: 'easeOutQuad'
+                        });
+                    }, index * 300);
+                });
+            }, 1500);
+        }
+        
+        function initializeDemoChart() {
+            const chartDom = document.getElementById('demo-chart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    textStyle: {
+                        color: '#ffffff'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)'
+                        }
+                    },
+                    axisLabel: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.3)'
+                        }
+                    },
+                    axisLabel: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                series: [{
+                    data: [120, 200, 150, 80, 70, 110, 130],
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#6366f1',
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#6366f1'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(99, 102, 241, 0.3)'
+                            }, {
+                                offset: 1, color: 'rgba(99, 102, 241, 0.05)'
+                            }]
+                        }
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            
+            // Animate chart data
+            setInterval(() => {
+                const newData = Array.from({length: 7}, () => Math.floor(Math.random() * 200) + 50);
+                myChart.setOption({
+                    series: [{
+                        data: newData
+                    }]
+                });
+            }, 3000);
+        }
+        
+        function startScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            anime({
+                targets: notification,
+                opacity: [0, 1],
+                translateX: [100, 0],
+                duration: 300,
+                easing: 'easeOutQuad'
+            });
+            
+            setTimeout(() => {
+                anime({
+                    targets: notification,
+                    opacity: [1, 0],
+                    translateX: [0, 100],
+                    duration: 300,
+                    easing: 'easeInQuad',
+                    complete: () => notification.remove()
+                });
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
